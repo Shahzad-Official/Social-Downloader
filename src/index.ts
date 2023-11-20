@@ -7,11 +7,8 @@ const port = 3000;
 
 app.use(cors({
     origin:["http://localhost:3000/"],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
 }));
 app.use(express.json());
-  
 app.use("/social-downloader",downloadRouter);
 
 app.use(errorHandler);
