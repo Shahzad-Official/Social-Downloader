@@ -112,6 +112,20 @@ class DownloadController {
         next(err);
       });
   }
+  static async proxyServer(req:Request,res:Response,next:NextFunction){
+    const {url}=req.query;
+    console.log("proxy is running"+url);
+    try{
+
+      const response= await axios(url?.toString()??"",{responseType:"arraybuffer"});
+
+      const data=await response.data;
+      res.send(data);
+    }catch(err){
+      next(err);
+    }
+
+  }
 }
 
 export default DownloadController;
