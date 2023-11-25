@@ -24,10 +24,7 @@ class DownloadController {
         const scriptContent = $(element).html();
         if (scriptContent && scriptContent.includes(".mp4")) {
           contentData = scriptContent;
-        } else if (scriptContent && scriptContent.includes("imageSpec_orig")) {
-          console.log("found script with image");
-          contentData = scriptContent;
-        }
+        } 
       });
       const jsonObject = JSON.parse(contentData ?? "");
       const video = PinterestUtils.findMp4(jsonObject);
