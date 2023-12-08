@@ -8,6 +8,7 @@ class DownloadMiddleware{
     static downloadMiddleware(req:Request,res:Response,next:NextFunction){
         const joiSchema=Joi.object({
             url:Joi.string().required(),
+            isMp3:Joi.boolean().optional(),
         });
         const {error}=joiSchema.validate(req.body);
         if(error){

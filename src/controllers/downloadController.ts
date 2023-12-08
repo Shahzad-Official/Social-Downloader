@@ -7,6 +7,16 @@ import { NextFunction, Request, Response } from "express";
 import axios from "axios";
 import { load } from "cheerio";
 import PinterestUtils from "../utils/pinterestUtils";
+import { bytesToMB } from "../utils/conversions";
+import youtubeDl from "youtube-dl-exec";
+
+interface YoutubeResponse{
+  fileSize: number;
+  hasAudio: boolean;
+  extension: string;
+  quality: string;
+  url: string;
+};
 
 class DownloadController {
   static async downloadPinterestData(
@@ -24,7 +34,7 @@ class DownloadController {
         const scriptContent = $(element).html();
         if (scriptContent && scriptContent.includes(".mp4")) {
           contentData = scriptContent;
-        } 
+        }
       });
       const jsonObject = JSON.parse(contentData ?? "");
       const video = PinterestUtils.findMp4(jsonObject);
@@ -41,20 +51,88 @@ class DownloadController {
     res: Response,
     next: NextFunction
   ) {
-    const { url } = req.body;
+    const { url, isMp3 } = req.body;
 
-    await ytdl
-      .getInfo(url)
-      .then((value) => {
+    await youtubeDl(url, {
+      dumpSingleJson: true,
+      noCheckCertificates: true,
+      noWarnings: true,
+      preferFreeFormats: true,
+      addHeader: ["referer:youtube.com", "user-agent:googlebot"],
+    })
+      .then(async (output) => {
+        let formatedData;
+        if (isMp3 === true) {
+          formatedData = output.formats
+            .filter(
+              (value) =>
+                value.asr != null &&
+                value.acodec !== "none" &&
+                value.fps === null
+            )
+            .map((result) => {
+              var resultData = JSON.parse(JSON.stringify(result));
+              return {
+                fileSize: bytesToMB(
+                  result.filesize ?? resultData.filesize_approx
+                ),
+                hasAudio: true,
+
+                extension: result.ext,
+                quality: result.format_note,
+                url: result.url,
+              };
+            });
+        } else {
+          formatedData = output.formats
+            .filter(
+              (value) =>
+                value.vcodec !== "none" &&
+                (value.format_note === "144p" ||
+                  value.format_note === "240p" ||
+                  value.format_note === "360p" ||
+                  value.format_note === "720p" ||
+                  value.format_note === "1080p" ||
+                  value.format_note === "1440p" ||
+                  value.format_note === "2160p")
+            )
+            .map((result) => {
+              var resultData = JSON.parse(JSON.stringify(result));
+              return {
+                fileSize: bytesToMB(
+                  result.filesize ?? resultData.filesize_approx
+                ),
+                hasAudio: result.acodec !== "none" ? true : false,
+                extension: result.ext,
+                quality: result.format_note,
+                url: result.url,
+              };
+            });
+          formatedData.sort((a, b) =>
+            a.hasAudio == b.hasAudio ? 0 : a.hasAudio ? -1 : 1
+          );
+        }
+
+        const uniqueQualities: { [key: string]: boolean } = {};
+        const filteredObjects: YoutubeResponse[] = [];
+        
+        formatedData.forEach((obj) => {
+            const quality = obj.quality;
+            if (!uniqueQualities[quality] ) {
+                uniqueQualities[quality] = true;
+                filteredObjects.push(obj);
+            }
+        });
         res.json({
-          success: true,
-          message: "Youtube Data has been fetched",
-          data: value.player_response.streamingData.adaptiveFormats,
+          videoId: output.id,
+          title: output.title,
+          thumbnail: output.thumbnails
+            .filter((value) => value.width === 480)
+            .at(-1)?.url,
+          formats: filteredObjects,
         });
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch((err) => next(err));
   }
   static async downloadInstaFb(
     req: Request,
@@ -109,19 +187,19 @@ class DownloadController {
         next(err);
       });
   }
-  static async proxyServer(req:Request,res:Response,next:NextFunction){
-    const {url}=req.query;
-    console.log("proxy is running"+url);
-    try{
+  static async proxyServer(req: Request, res: Response, next: NextFunction) {
+    const { url } = req.query;
+    console.log("proxy is running" + url);
+    try {
+      const response = await axios(url?.toString() ?? "", {
+        responseType: "arraybuffer",
+      });
 
-      const response= await axios(url?.toString()??"",{responseType:"arraybuffer"});
-
-      const data=await response.data;
+      const data = await response.data;
       res.send(data);
-    }catch(err){
+    } catch (err) {
       next(err);
     }
-
   }
 }
 

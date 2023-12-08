@@ -19,15 +19,21 @@
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "fluent-ffmpeg": "^2.1.2",
     "joi": "^17.11.0",
     "snapsave-downloader-itj": "^1.0.1",
     "ts-node": "^10.9.1",
     "twitter-downloader": "^1.0.4",
     "typescript": "^5.2.2",
+    "youtube-dl-exec": "^2.4.17",
+    "yt-get": "^1.1.2",
+    "yt-player": "^3.6.1",
     "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.16",
-    "@types/express": "^4.17.21"
+    "@types/express": "^4.17.21",
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "@types/yt-player": "^3.5.4"
   }
 }
