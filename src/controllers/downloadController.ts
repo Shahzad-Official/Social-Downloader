@@ -87,14 +87,14 @@ class DownloadController {
           formatedData = output.formats
             .filter(
               (value) =>
-                value.vcodec !== "none" &&
-                (value.format_note === "144p" ||
-                  value.format_note === "240p" ||
-                  value.format_note === "360p" ||
-                  value.format_note === "720p" ||
-                  value.format_note === "1080p" ||
-                  value.format_note === "1440p" ||
-                  value.format_note === "2160p")
+                value.vcodec !== "none" &&value.ext!=="3gp"&&value.acodec!=="none"
+                // (value.format_note === "144p" ||
+                //   value.format_note === "240p" ||
+                //   value.format_note === "360p" ||
+                //   value.format_note === "720p" ||
+                //   value.format_note === "1080p" ||
+                //   value.format_note === "1440p" ||
+                //   value.format_note === "2160p")
             )
             .map((result) => {
               var resultData = JSON.parse(JSON.stringify(result));
@@ -188,18 +188,18 @@ class DownloadController {
       });
   }
   static async proxyServer(req: Request, res: Response, next: NextFunction) {
-    const { url } = req.query;
-    console.log("proxy is running" + url);
-    try {
-      const response = await axios(url?.toString() ?? "", {
+    const { url } = req.body;
+    // try {
+      const response = await axios.get(url?.toString() ?? "", {
         responseType: "arraybuffer",
       });
-
+      console.log(response);
       const data = await response.data;
+
       res.send(data);
-    } catch (err) {
-      next(err);
-    }
+    // } catch (err) {
+    //   next(err);
+    // }
   }
 }
 

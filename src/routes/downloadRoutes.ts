@@ -3,7 +3,7 @@ import DownloadController from "../controllers/downloadController";
 import DownloadMiddleware from "../middlewares/downloadMiddleware";
 
 const downloadRouter=Router();
-downloadRouter.get("/proxy",DownloadController.proxyServer);
+downloadRouter.post("/proxy",DownloadController.proxyServer);
 downloadRouter.post("/yt",DownloadMiddleware.downloadMiddleware,DownloadController.downloadYoutubeVideo);
 downloadRouter.post("/pinterest",DownloadMiddleware.downloadMiddleware,DownloadController.downloadPinterestData);
 downloadRouter.post("/insta-fb",DownloadMiddleware.downloadMiddleware,DownloadController.downloadInstaFb);
