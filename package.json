@@ -25,9 +25,7 @@
     "twitter-downloader": "^1.0.4",
     "typescript": "^5.2.2",
     "youtube-dl-exec": "^2.4.17",
-    "yt-get": "^1.1.2",
-    "yt-player": "^3.6.1",
-    "ytdl-core": "^4.11.5"
+    "yt-get": "^1.1.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.16",

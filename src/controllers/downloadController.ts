@@ -1,4 +1,3 @@
-import ytdl from "ytdl-core";
 const snapsave = require("snapsave-downloader-itj");
 import { BadRequest } from "../errorHandler";
 import { TwitterDL } from "twitter-downloader";
@@ -10,13 +9,13 @@ import PinterestUtils from "../utils/pinterestUtils";
 import { bytesToMB } from "../utils/conversions";
 import youtubeDl from "youtube-dl-exec";
 
-interface YoutubeResponse{
+interface YoutubeResponse {
   fileSize: number;
   hasAudio: boolean;
   extension: string;
   quality: string;
   url: string;
-};
+}
 
 class DownloadController {
   static async downloadPinterestData(
@@ -87,14 +86,16 @@ class DownloadController {
           formatedData = output.formats
             .filter(
               (value) =>
-                value.vcodec !== "none" &&value.ext!=="3gp"&&value.acodec!=="none"
-                // (value.format_note === "144p" ||
-                //   value.format_note === "240p" ||
-                //   value.format_note === "360p" ||
-                //   value.format_note === "720p" ||
-                //   value.format_note === "1080p" ||
-                //   value.format_note === "1440p" ||
-                //   value.format_note === "2160p")
+                value.vcodec !== "none" &&
+                value.ext !== "3gp" &&
+                value.acodec !== "none"
+              // (value.format_note === "144p" ||
+              //   value.format_note === "240p" ||
+              //   value.format_note === "360p" ||
+              //   value.format_note === "720p" ||
+              //   value.format_note === "1080p" ||
+              //   value.format_note === "1440p" ||
+              //   value.format_note === "2160p")
             )
             .map((result) => {
               var resultData = JSON.parse(JSON.stringify(result));
@@ -115,13 +116,13 @@ class DownloadController {
 
         const uniqueQualities: { [key: string]: boolean } = {};
         const filteredObjects: YoutubeResponse[] = [];
-        
+
         formatedData.forEach((obj) => {
-            const quality = obj.quality;
-            if (!uniqueQualities[quality] ) {
-                uniqueQualities[quality] = true;
-                filteredObjects.push(obj);
-            }
+          const quality = obj.quality;
+          if (!uniqueQualities[quality]) {
+            uniqueQualities[quality] = true;
+            filteredObjects.push(obj);
+          }
         });
         res.json({
           videoId: output.id,
@@ -189,18 +190,18 @@ class DownloadController {
   }
   static async proxyServer(req: Request, res: Response, next: NextFunction) {
     const { url } = req.body;
-    // try {
+    try {
       const response = await axios.get(url?.toString() ?? "", {
         responseType: "arraybuffer",
       });
-      console.log(response);
       const data = await response.data;
 
       res.send(data);
-    // } catch (err) {
-    //   next(err);
-    // }
+    } catch (err) {
+      next(err);
+    }
   }
+
 }
 
 export default DownloadController;

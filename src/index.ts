@@ -6,13 +6,16 @@ const app = express();
 const port = 3000;
 
 app.use(cors({
-    origin: ["http://localhost:3000","https://pinterest-video-downloader1.web.app"],
+    origin: ["http://localhost:4400","https://pinterest-video-downloader1.web.app"],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }));
 
   
 app.use(express.json());
-app.use("/api",downloadRouter);
+app.use("/",downloadRouter);
+app.use("/test",(req,res)=>{
+    res.send("Working fine");
+})
 app.use(errorHandler);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
