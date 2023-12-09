@@ -6,14 +6,14 @@ const app = express();
 const port = 4401;
 
 app.use(cors({
-    origin: ["http://localhost:4400","https://pinterest-video-downloader1.web.app"],
+    origin: ["http://localhost:4400","https://youtube-downloaders.com/"],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }));
 
   
 app.use(express.json());
-app.use("/",downloadRouter);
+app.use("/api",downloadRouter);
 app.use("/test",(req,res)=>{
     res.send("Working fine");
 })
