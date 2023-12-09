@@ -3,7 +3,7 @@ import downloadRouter from './routes/downloadRoutes';
 import errorHandler from './errorHandler';
 import cors from "cors";
 const app = express();
-const port = 3000;
+const port = 4401;
 
 app.use(cors({
     origin: ["http://localhost:4400","https://pinterest-video-downloader1.web.app"],
