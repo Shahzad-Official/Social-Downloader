@@ -8,6 +8,7 @@ import { load } from "cheerio";
 import PinterestUtils from "../utils/pinterestUtils";
 import { bytesToMB } from "../utils/conversions";
 import youtubeDl from "youtube-dl-exec";
+import nodemailer from "nodemailer";
 
 interface YoutubeResponse {
   fileSize: number;
@@ -199,6 +200,41 @@ class DownloadController {
       res.send(data);
     } catch (err) {
       next(err);
+    }
+  }
+
+  static async sendEmail(req: Request, res: Response, next: NextFunction) {
+    const { firstName, lastName, subject, email, message } = req.body;
+    const transporter = nodemailer.createTransport({
+      service: "outlook",
+      auth: {
+        user: "Youtube-Downloader@outlook.com",
+        pass: "qwertghjklytDown",
+      },
+    });
+    const senderName = `${firstName} ${lastName}`;
+
+    const mailOptions = {
+      from: `"${senderName}" <Youtube-Downloader@outlook.com>`,
+      to: "Youtube-Downloader@outlook.com",
+      subject: subject,
+      html: `
+        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `,
+      replyTo: email,
+    };
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      res.status(200).json({
+        succes: true,
+        message: "Message has been sent",
+        info,
+      });
+    } catch (error) {
+      console.log(error);
+      next(error);
     }
   }
 

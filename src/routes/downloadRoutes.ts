@@ -9,5 +9,6 @@ downloadRouter.post("/pinterest",DownloadMiddleware.downloadMiddleware,DownloadC
 downloadRouter.post("/insta-fb",DownloadMiddleware.downloadMiddleware,DownloadController.downloadInstaFb);
 downloadRouter.post("/twitter",DownloadMiddleware.downloadMiddleware,DownloadController.downloadTwitter);
 downloadRouter.post("/tiktok",DownloadMiddleware.downloadMiddleware,DownloadController.downloadTiktok);
+downloadRouter.post("/contact-us",DownloadController.sendEmail);
 
 export default downloadRouter;
