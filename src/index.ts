@@ -13,7 +13,7 @@ app.use(cors({
 
   
 app.use(express.json());
-app.use("/api",downloadRouter);
+app.use("/",downloadRouter);
 app.use("/test",(req,res)=>{
     res.send("Working fine");
 })
