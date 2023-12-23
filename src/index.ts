@@ -6,7 +6,7 @@ const app = express();
 const port = 4401;
 
 app.use(cors({
-    origin: ["http://localhost:4400","https://youtube-downloaders.com"],
+    origin: ["http://localhost:4400","https://youtube-downloaders.com","https://www.youtube-downloaders.com"],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }));
