@@ -18,7 +18,7 @@ app.use(express.json());
 app.use((req, res, next) => {
   const apiKey = req.headers["x-api-key"];
 
-  if (apiKey && apiKey === "your-api-key") {
+  if (apiKey && apiKey === "youtube_downloader_key") {
     next();
   } else {
     res.status(401).json({
