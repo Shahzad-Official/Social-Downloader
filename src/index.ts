@@ -1,12 +1,17 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import downloadRouter from './routes/downloadRoutes';
 import errorHandler from './errorHandler';
-import cors from "cors";
 const app = express();
 const port = 4401;
+app.use((req, res, next) => {
+    const apiKey = req.headers['x-api-key'];
 
-app.use(cors());
-
+    if (apiKey && apiKey === 'your-api-key') {
+        next();
+    } else {
+        res.status(401).json({ error: 'Unauthorized. Invalid API key.' });
+    } 
+});
   
 app.use(express.json());
 app.use("/api",downloadRouter);
