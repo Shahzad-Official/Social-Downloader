@@ -126,6 +126,8 @@ class DownloadController {
           }
         });
         res.json({
+          hasError:false,
+          message:"success",
           videoId: output.id,
           title: output.title,
           thumbnail: output.thumbnails
