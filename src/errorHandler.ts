@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 class CustomError extends Error {
-  statusCode:number;
-  constructor(message:string, statusCode:number) {
+  statusCode: number;
+  constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
     this.name = this.constructor.name;
@@ -23,12 +23,21 @@ export class UnAuthorized extends CustomError {
     super(message, 401);
   }
 }
-export default function errorHandler(err:Error|CustomError, req:Request, res:Response, next:NextFunction) {
+export default function errorHandler(
+  err: Error | CustomError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (err instanceof CustomError) {
     res.status(err.statusCode).json({ success: false, message: err.message });
   } else {
     res
       .status(500)
-      .json({ success: false, message: "Internal Server Error.", error: err.message });
+      .json({
+        success: false,
+        message: "Internal Server Error.",
+        error: err.message,
+      });
   }
 }
